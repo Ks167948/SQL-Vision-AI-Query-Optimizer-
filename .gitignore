@@ -1,0 +1,16 @@
+# Python & Django
+__pycache__/
+*.py[cod]
+venv/
+env/
+.env
+db.sqlite3
+
+# Docker & Database Data (Never upload these!)
+.docker/
+pg_main_data/
+pg_sandbox_data/
+
+# OS specific
+.DS_Store
+Thumbs.db

@@ -1,0 +1,51 @@
+services:
+  # 1. Main Application Database
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=sqlvision_main
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_main_data:/var/lib/postgresql/data
+
+  # 2. Sandbox Database
+  sandbox_db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=sandbox
+      - POSTGRES_USER=sandbox_user
+      - POSTGRES_PASSWORD=sandbox_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_sandbox_data:/var/lib/postgresql/data
+
+  # 3. Message Broker
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  # 4. Django Backend
+  web:
+    build: ./backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_URL=postgres://admin:secret@db:5432/sqlvision_main
+      - SANDBOX_DB_URL=postgres://sandbox_user:sandbox_pass@sandbox_db:5432/sandbox
+      - CELERY_BROKER_URL=redis://redis:6379/0
+
+# Global volumes definition (must be at the very bottom, NOT indented)
+volumes:
+  pg_main_data:
+  pg_sandbox_data:

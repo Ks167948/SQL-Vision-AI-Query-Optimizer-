@@ -1,103 +1,129 @@
-SQL Vision AI (WIP)
-SQL Vision is an autonomous database performance assistant. It safely executes SQL queries in a sandboxed transaction, extracts the Postgres execution plan (EXPLAIN JSON), and uses a local Large Language Model (LLM) to provide "Staff Engineer" level optimization advice.
+# Project Title: SQL-Vision: Autonomous DB Assistant
 
-Current Status: Backend & AI Pipeline are 100% Operational. Frontend is currently under construction.
+An autonomous database performance assistant that empowers backend engineers to instantly diagnose and optimize slow SQL queries by translating complex execution plans into actionable, AI-driven insights.
 
-🚀 Tech Stack
-Core: Python, Django REST Framework
+## 💡 Why this works (The Breakdown):
+### What it is:
+An "autonomous database performance assistant" that translates "complex execution plans into actionable, AI-driven insights."
+### Who it’s for:
+"Backend engineers" (or software developers/DBAs).
+### Why it’s useful:
+It allows them to "instantly diagnose and optimize slow SQL queries" without needing to be a Postgres expert or risk breaking a production database.
 
-Database: PostgreSQL (Primary + Sandbox Instances)
 
-Async Processing: Celery + Redis
+## 🚀 Demo
+Live Link: https://yourproject.com
 
-AI/LLM: Ollama (Llama3 / Mistral) running locally
+## 📸 Screenshots
 
-Infrastructure: Docker Compose
+## ✨ Features
+🤖 AI-Powered Optimization: Instantly generates "Staff Engineer" level tuning advice using local LLMs.
 
-Frontend: React + Vite + Tailwind CSS (In Progress)
+🛡️ Zero-Risk Sandboxing: Safely executes EXPLAIN analysis in ephemeral transactions without affecting live data.
 
-🛠️ Prerequisites
-Docker Desktop installed and running.
+⚡ Async Architecture: Handles heavy workloads non-blocking via a distributed Celery & Redis queue.
 
-Ollama installed on your host machine.
 
-Run a model: ollama run llama3 (or mistral)
+📊 Deep Plan Analysis: Decodes complex PostgreSQL EXPLAIN JSON output into actionable index recommendations.
 
-Note: The system connects to Ollama via host.docker.internal.
+🐳 Fully Containerized: Modular microservices architecture orchestrated with Docker Compose.
 
-⚡ Quick Start
-1. Clone & Setup
-Bash
+🔌 RESTful API: Robust backend endpoints built with Django REST Framework for easy integration.
+
+## 🛠 Tech Stack
+### Frontend:
+
+React.js (Vite)
+
+Tailwind CSS
+
+Lucide React
+
+### Backend:
+
+Python (Django REST Framework)
+
+Celery (Distributed Task Queue)
+
+Redis (Message Broker)
+
+### Database:
+
+PostgreSQL (Primary + Sandbox Instances)
+
+DevOps & Infrastructure:
+
+Docker & Docker Compose
+
+Ollama (Local LLM Inference)
+
+## ⚙️ Installation
+### Prerequisites:
+
+Docker Desktop (Running)
+
+Ollama (Installed & Running on host)
+
+## 1. Clone the repo
+### Bash
 git clone https://github.com/Ks167948/SQL-Vision.git
 cd SQL-Vision
-2. Run the System
-Bash
+
+## 2. Start the AI Model
+Since the AI runs locally on your machine, you need to start the model server first:
+
+### Bash
+### Open a separate terminal
+ollama run llama3
+
+## 3. Build & Run
+Launch the entire system (Frontend, Backend, Database, Redis, Worker) with one command:
+
+### Bash
 docker-compose up --build
-Wait until you see the Celery worker log: celery@... ready.
 
-3. Usage (Via API)
-Since the Frontend is WIP, use the browsable API to test the system.
+## 4. Access the App
+Frontend: http://localhost:3000
 
-Step A: Create a Project (Define your Schema)
+Backend API: http://localhost:8000/api/v1/analyze/
 
-Go to: http://127.0.0.1:8000/api/v1/projects/
-
-Fill out the form:
-
-Name: Test DB
-
-Database Type: PostgreSQL
-
-Schema DDL:
-
-SQL
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-Click POST. Copy the id from the response.
-
-Step B: Analyze a Query
-
-Go to: http://127.0.0.1:8000/api/v1/analyze/
-
-Click "Raw Data" and use this JSON:
-
-JSON
-{
-  "project": "PASTE_YOUR_PROJECT_ID_HERE",
-  "raw_sql": "SELECT * FROM users WHERE email = 'test@example.com'"
-}
-Click POST.
-
-Initial Status: PENDING
-
-Step C: Get Results
-
-Click the "GET" button (top right) to refresh the list.
-
-Scroll to the bottom.
-
-Status: COMPLETED
-
-AI Suggestion: You should see advice (e.g., "Add an index on the email column...").
-
-📂 Project Architecture
+## 📂 Project Structure
+```bash
 sql-vision/
-├── backend/            # Django API & Celery Tasks
-│   ├── core/tasks.py   # The "Brain": Sandbox Logic + AI connection
-├── frontend/           # React App (WIP)
-├── docker-compose.yml  # Orchestration
-🚧 Roadmap
-[x] Backend API: Project & Analysis endpoints.
+├── backend/                 # Django REST Framework API
+│   ├── core/
+│   │   ├── tasks.py         # 🧠 The "Brain": Celery Worker + AI Logic
+│   │   ├── models.py        # Database Schema (Project, QueryAnalysis)
+│   │   ├── views.py         # API Endpoints
+│   │   └── serializers.py   # JSON Data Transformation
+│   ├── config/              # Django Settings (CORS, DB Config)
+│   ├── Dockerfile           # Python/Django Image Definition
+│   └── requirements.txt     # Python Dependencies
+│
+├── frontend/                # React + Vite Application
+│   ├── src/
+│   │   ├── components/      # Reusable UI Components
+│   │   ├── api.js           # 🔌 Axios Bridge to Backend API
+│   │   ├── App.jsx          # Main Dashboard Layout
+│   │   └── main.jsx         # React Entry Point
+│   ├── Dockerfile           # Node.js/Vite Image Definition
+│   └── tailwind.config.js   # Styling Configuration
+│
+├── docker-compose.yml       # 🐳 Orchestration (Web, Worker, DB, Redis)
+└── README.md                # Project Documentation
+```
+### Problem It Solves
+## 🎯 Problem Statement
+Backend engineers often struggle to optimize slow SQL queries because analyzing PostgreSQL EXPLAIN plans requires deep database expertise. Furthermore, testing heavy queries on production databases is risky and can degrade live performance.
 
-[x] Sandboxing: Safe transaction rollback for EXPLAIN.
+SQL-Vision solves this by providing a safe, ephemeral sandbox where queries are analyzed in isolation. It uses an AI engine to translate cryptic execution plans into clear, actionable optimization strategies—empowering developers to fix bottlenecks without needing a DBA.
 
-[x] AI Integration: Connection to local Ollama instance.
+## Future Improvements
+### 🚀 Future Improvements
+[ ] 📈 Visual Query Plan: Interactive graph visualization of the execution nodes (Scan vs. Seek).
 
-[ ] Frontend: React Dashboard for visualization. (Next Step)
+[ ] 🤖 Multi-LLM Support: Allow users to switch between Llama3, Mistral, and GPT-4 for analysis.
 
-[ ] Visualizer: Graphical view of Postgres Query Plans.
+[ ] 📦 Schema Import: Auto-import schema from existing live databases via connection string.
 
-Created by Kishore
+[ ] ⚡ Index Auto-Tuning: Automatically generate the exact CREATE INDEX SQL command for the user.
